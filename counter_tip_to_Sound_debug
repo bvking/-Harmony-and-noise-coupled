@@ -1,4 +1,3 @@
-
 //MANAGE SOUND
 
 import ddf.minim.*;
@@ -47,7 +46,7 @@ MoogFilter  moog4;
 
 //MANAGE VARIABLE TO MODULATE SOUND
 int freqMin = 0;
-int freqMax= 16000;
+int freqMax= 14000;
 float phaz, freq;
 float rez;
 float[] phazi;
@@ -207,49 +206,61 @@ void draw() {
 //**************** IF MOTOR TURN IN Clock Way and number of revolution is >0
     // revoltion pair
        if (net.phase[i] > 0 && j[i]==0)  { 
-       phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 0, 20000), freqMin, freqMax);  
+  //     phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 0, 20000), freqMin, freqMax); 
+        phazi[i]= map( net.phase[i], 0, 2*PI, freqMin, freqMax); 
        println ("nombre pair");
      }
      // revoltion impair
         if (net.phase[i] > 0 && j[i]==1 )  {   
-        phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 20000, 0), freqMin, freqMax);
+    //    phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 20000, 0), freqMin, freqMax);
+         phazi[i]= map( net.phase[i], 0, 2*PI, freqMax, freqMin); 
         println ("nombre impair");
      }
     // IF MOTOR TURN IN CClock Way  and number of revolution is >0 
       if  (net.phase[i] < 0 && j[i]==0 ) {   
-      phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 0, 20000), freqMin, freqMax); 
+   //   phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 0, 20000), freqMin, freqMax); 
+          phazi[i]= map( net.phase[i], 0, -2*PI, freqMin, freqMax); 
        println ("nombre pair back");
      } 
       if (net.phase[i] < 0 && j[i]==1) {   
-      phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 20000, 0), freqMin, freqMax);
+     // phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 20000, 0), freqMin, freqMax);
+       phazi[i]= map( net.phase[i], 0, -2*PI, freqMax, freqMin); 
       println ("nombre impair back");
      }   
-    // IF MOTOR TURN IN CClock Way   and number of revolution is <0 
-    // revoltion impair
+    // IF MOTOR TURN IN CClock Way and number of revolution is <0 
+    // revolution impair= odd number
        if (net.phase[i] < 0 && j[i]==-1)  { 
-       phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 20000, 0), freqMin, freqMax);
-       println ("nombre impair negative CCW");
+    //   phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 20000, 0), freqMin, freqMax);
+        phazi[i]= map( net.phase[i], 0, -2*PI, freqMax,freqMin);
+    
+       println ("nombre impair negative CounterCW");
      }
-     // revoltion pair
+     // revoltion pair = even number
         if (net.phase[i] < 0 && (j[i]==0 && rev[i]<0))  { 
-        phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 0, 20000), freqMin, freqMax);  
-        println ("nombre pair negative CCW");
+     //   phazi[i]= constrain (map( net.phase[i], 0, -2*PI, 0, 20000), freqMin, freqMax);
+         phazi[i]= map( net.phase[i], 0, -2*PI, freqMin,freqMax);
+        println ("nombre pair negative CounterCW");
      }
     //*******************************$ // IF MOTOR TURN IN Clock Way   and number of revolution is <0 
         if (net.phase[i] > 0 && j[i]==-1)  { 
-        phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 0, 20000), freqMin, freqMax); 
+     //   phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 0, 20000), freqMin, freqMax);
+         phazi[i]= map( net.phase[i], 0, 2*PI, freqMax, freqMin);
           println ("nombre impair negative CW");
      }
         if (net.phase[i] > 0 && (j[i]==0 && rev[i]<0))  { 
-          phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 20000, 0), freqMin, freqMax); 
+       //   phazi[i]= constrain (map( net.phase[i], 0, 2*PI, 20000, 0), freqMin, freqMax); 
+           phazi[i]= map( net.phase[i], 0, 2*PI, freqMin, freqMax);
           println ("nombre pair negative CW");
       }
                
-        speedi[i]= map ((net.velocity[i]*100), -300, 300, 0, 1);
+    //    speedi[i]= map ((net.velocity[i]*100), -1000, 1000, 0, 1);
+         speedi[i]= abs (map ((net.velocity[i]*2000), -1000, 1000, -1, 1));
+         
+        print ("peedi[i "); print (i); print (" "); print ( speedi[i]);
         
-        
-        rez= constrain( map( orderParameter, 0, 1, -1, 1), 0, 1 );   
-        resonancei[i]= speedi[i]/rez;
+  //      rez= constrain( map( orderParameter, 0, 1, -1, 1), 0, 1 );  
+            rez= abs (constrain( map( orderParameter, 0, 1, -1, 1), -1, 1 ));  
+        resonancei[i]= speedi[i]*rez;
         
         print ("resonance "); print (i); print (" "); print (resonancei[i]);
         println ("");
@@ -281,7 +292,7 @@ void draw() {
   */
        moog4.resonance.setLastValue( resonancei[4]); //rez
        
-        print ("phazi "); print (i);  print (" "); println ( phazi[i]); 
+        print ("phazi "); print (4);  print (" "); println ( phazi[4]); 
    //    
  // ************** PRINT DATA TO SEE COHERENCE BETWEEN MOVEMENT AND SOUND
  /*
